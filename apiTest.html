@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<button class="btn">CLICK</button>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+
+    document.querySelector(".btn").addEventListener("click",function(){
+
+        //accessToken 먼저 확인해주기
+        const tokenStr = localStorage.getItem("accessToken")
+
+        //토큰이 없으면 메시지 띄우기
+        if(!tokenStr){
+            alert("키를 발급받으세요")
+            self.location = "login.html"
+            return
+        }
+
+        //객체화 시키기
+        const tokenObj = JSON.parse(tokenStr)
+
+        //현재 토큰
+        const accessTokenValue = tokenObj.ACCESS
+
+        alert(accessTokenValue)
+
+        sendRequest(accessTokenValue)
+
+    },false);
+
+    //비동기로 예외처리 진행
+    async function sendRequest(token){
+
+        const headerObj = {Authorization: "Bearer " +token}
+
+        const response = await axios.get("http://localhost:8080/api/board/list",{
+            headers: headerObj
+        }).catch(function (ex){
+            console.log(ex)
+            alert(ex.message)
+        })
+
+        const data = response.data
+        console.log(data)
+    }
+
+</script>
+</body>
+</html>
